@@ -1,0 +1,52 @@
+name: Update Pre Sign-up Lambda Function
+
+on:
+  push:
+    branches:
+      - lambda-dev
+      - main
+      - lambda-prod
+permissions:
+  id-token: write 
+  contents: read 
+jobs:
+  Pre-Sign-Up-lambda:
+      runs-on: ubuntu-latest
+      steps:
+      - name: Set Function (dev)
+        if: endsWith(github.ref, '-dev')
+        run: |
+          echo "AWS_LAMBDA_FUNCTION_NAME=${{ secrets.DEV_AWS_LAMBDA_FUNCTION_NAME }}" >> $GITHUB_ENV
+      - name: Set Function (qa)
+        if: endsWith(github.ref, '-qa')
+        run: |
+          echo "AWS_LAMBDA_FUNCTION_NAME=${{ secrets.QA_AWS_LAMBDA_FUNCTION_FUNCTION_NAME }}" >> $GITHUB_ENV
+      - name: Set Function (prod)
+        if: endsWith(github.env, '-prod')
+        run: |
+          echo "AWS_LAMBDA_FUNCTION_NAME=${{ secrets.PROD_AWS_LAMBDA_FUNCTION_NAME }}" >> $GITHUB_ENV
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-to-assume: ${{ secrets.IAM_ROLE }}
+          role-session-name: GithubActionsSession
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Install Node.js and npm
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+      - name: Install dependencies
+        run: |
+          cd lambdas/pre-sign-up/pre-sign-up
+          npm install 
+      - name: Transpile TypeScript code
+        run: |
+          cd lambdas/pre-sign-up/pre-sign-up
+          tsc app.ts --outDir .
+          tree
+      - name: Create archive
+        run: |
+          cd lambdas/pre-sign-up
+          zip -qq -j pre-sign-up.zip app.js && aws lambda update-function-code --function-name ${{ env.AWS_LAMBDA_FUNCTION_NAME}} --zip-file fileb://pre-sign-up.zip --region ${{ secrets.AWS_REGION }}
