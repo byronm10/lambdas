@@ -25,7 +25,7 @@ jobs:
           npm install 
       - name: Transpile TypeScript code
         run: |
-          cd lambdas/pre-sign-up/pre-sign-up
+          cd pre-sign-up/pre-sign-up
           tsc app.ts --outDir .
           tree
       - name: Create archive
