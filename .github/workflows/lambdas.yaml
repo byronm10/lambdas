@@ -21,7 +21,7 @@ jobs:
           node-version: 16
       - name: Install dependencies
         run: |
-          cd lambdas/pre-sign-up/pre-sign-up
+          cd pre-sign-up/pre-sign-up
           npm install 
       - name: Transpile TypeScript code
         run: |
