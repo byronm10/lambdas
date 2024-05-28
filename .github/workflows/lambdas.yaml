@@ -28,7 +28,4 @@ jobs:
           cd pre-sign-up/pre-sign-up
           tsc app.ts --outDir .
           tree
-      - name: Create archive
-        run: |
-          cd lambdas/pre-sign-up
           zip -qq -j pre-sign-up.zip app.js && aws lambda update-function-code --function-name ${{ env.AWS_LAMBDA_FUNCTION_NAME}} --zip-file fileb://pre-sign-up.zip --region ${{ secrets.AWS_REGION }}
