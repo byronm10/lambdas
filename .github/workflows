@@ -3,9 +3,6 @@ name: Update Pre Sign-up Lambda Function
 on:
   push:
     branches:
-      - lambda-dev
-      - lambda-qa
-      - lambda-prod
       - main
 permissions:
   id-token: write 
