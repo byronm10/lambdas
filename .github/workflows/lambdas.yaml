@@ -13,24 +13,6 @@ jobs:
   Pre-Sign-Up-lambda:
       runs-on: ubuntu-latest
       steps:
-      - name: Set Function (dev)
-        if: endsWith(github.ref, '-dev')
-        run: |
-          echo "AWS_LAMBDA_FUNCTION_NAME=${{ secrets.DEV_AWS_LAMBDA_FUNCTION_NAME }}" >> $GITHUB_ENV
-      - name: Set Function (qa)
-        if: endsWith(github.ref, '-qa')
-        run: |
-          echo "AWS_LAMBDA_FUNCTION_NAME=${{ secrets.QA_AWS_LAMBDA_FUNCTION_FUNCTION_NAME }}" >> $GITHUB_ENV
-      - name: Set Function (prod)
-        if: endsWith(github.env, '-prod')
-        run: |
-          echo "AWS_LAMBDA_FUNCTION_NAME=${{ secrets.PROD_AWS_LAMBDA_FUNCTION_NAME }}" >> $GITHUB_ENV
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v3
-        with:
-          aws-region: ${{ secrets.AWS_REGION }}
-          role-to-assume: ${{ secrets.IAM_ROLE }}
-          role-session-name: GithubActionsSession
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Install Node.js and npm
